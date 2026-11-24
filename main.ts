@@ -22,6 +22,15 @@ import { join } from 'node:path';
 const JOKE =
   "My cat stares at empty corners for hours, then looks at me like I'm the idiot who can't see the ghost.";
 
+// The gate takes 1 to 200 UTF-8 characters: refuse loudly rather than
+// emit a text the gate would score 0.
+if ([...JOKE].length < 1 || [...JOKE].length > 200) {
+  throw new Error(`joke is ${[...JOKE].length} characters, outside 1-200`);
+}
+if (JOKE.trim() !== JOKE || JOKE.includes('\n')) {
+  throw new Error('joke must be a single line with no surrounding space');
+}
+
 const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 mkdirSync(outDir, { recursive: true });
 writeFileSync(join(outDir, 'entry.txt'), JOKE, 'utf8');
